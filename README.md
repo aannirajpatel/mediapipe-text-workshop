@@ -20,7 +20,7 @@ We will create an app that allows users to create tasks and automatically catego
 ## Usage
 1. Clone the repository.
 2. Install the required dependencies by doing `npm install`.
-3. Start the development server using `npm run start`, the browser should automatically open the app at `http://localhost:3000`.
+3. Start the development server using `npm run start`, the browser should automatically open the app at `http://localhost:3000/mediapipe-text-workshop`.
 4. Start creating tasks and categories. Then click on the magic floating action button to automatically categorize the tasks.
 
 ## Demo
