@@ -1,11 +1,12 @@
-import './App.css';
-import React from 'react';
-import Button from '@mui/material/Button';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import { CssBaseline, Fab, Input, Tooltip, Accordion, AccordionSummary, AccordionDetails, Dialog, List, ListItem, ListItemText, ListItemButton, Paper, AccordionActions } from '@mui/material';
 import { Add, AutoFixHigh, Check, Delete, Edit, ExpandMore } from '@mui/icons-material';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import { Accordion, AccordionActions, AccordionDetails, AccordionSummary, CssBaseline, Dialog, Fab, Input, List, ListItemButton, ListItemText, Paper, Tooltip } from '@mui/material';
+import Button from '@mui/material/Button';
+import React from 'react';
 import { v4 } from 'uuid';
-
+import './App.css';
+import { createEmbedder, getCosineSimilarity } from './MediaPipe.ts';
+import { useQuery } from '@tanstack/react-query';
 
 interface Task {
   id: string;
@@ -14,6 +15,7 @@ interface Task {
 }
 
 function App() {
+  const { isLoading, isError, error } = useQuery({queryKey: ['embedder'], queryFn: createEmbedder});
   const [todos, setTodos] = React.useState<Task[]>([{ id: v4(), content: 'Example task', categoryId: 0 }]);
   const [categories, setCategories] = React.useState<string[]>(["Unorganized"]);
 
@@ -39,7 +41,22 @@ function App() {
   }
 
   const handleSmartReorganize = () => {
-
+    if(isError) {console.error("MediaPipe Error: ",error);}
+    if(isLoading || isError) return;
+    const newTodos:Task[] = [];
+    todos.forEach((todo) => {
+      const maxMatch = { categoryId: 0, similarity: 0 };
+      categories.forEach((category, index) => {
+        const similarity = getCosineSimilarity(todo.content, category);
+        if (similarity > maxMatch.similarity && index !== 0) {
+          maxMatch.categoryId = index;
+          maxMatch.similarity = similarity;
+        }
+      });
+      // console.log("MAX:",maxMatch.categoryId, categories[maxMatch.categoryId], maxMatch.similarity, todo.content);
+      newTodos.push({ ...todo, categoryId: maxMatch.categoryId });
+    });
+    setTodos(newTodos);
   }
 
   const tasksByCategory: Task[][] = categories.map((_category, categoryIndex) => todos.filter((todo) => todo.categoryId === categoryIndex));
@@ -65,33 +82,33 @@ function App() {
             <Button variant="contained" onClick={handleAddTask}>Create task</Button>
           </div>
           <div>
-            <Button variant='contained' startIcon={<Add />} onClick={()=>setAddCategoryDialogOpen(true)}>Add category</Button>
+            <Button variant='contained' startIcon={<Add />} onClick={() => setAddCategoryDialogOpen(true)}>Add category</Button>
           </div>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '50vw', gap: 16}}>
-            {
-              tasksByCategory.map((tasks, index) => {
-                return <Accordion>
-                  <AccordionSummary expandIcon={<ExpandMore />}>
-                    <h3>{categories[index]}</h3>
-                  </AccordionSummary>
-                  {index > 0 && <AccordionActions>
-                    <Button variant="contained" color="error" onClick={() => handleDeleteCategory(index)} startIcon={<Delete />}>Delete</Button>
-                  </AccordionActions>}
-                  <AccordionDetails>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                      {tasks.map((task) => {
-                        return <TaskContainer task={task} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask} categories={categories} handleUpdateCategory={handleUpdateCategory} />
-                      })}
-                    </div>
-                  </AccordionDetails>
-                </Accordion>
-              })
-            }
-          </div>
+            <div style={{ display: 'flex', flexDirection: 'column', width: '50vw', gap: 16 }}>
+              {
+                tasksByCategory.map((tasks, index) => {
+                  return <Accordion>
+                    <AccordionSummary expandIcon={<ExpandMore />}>
+                      <h3>{categories[index]}</h3>
+                    </AccordionSummary>
+                    {index > 0 && <AccordionActions>
+                      <Button variant="contained" color="error" onClick={() => handleDeleteCategory(index)} startIcon={<Delete />}>Delete</Button>
+                    </AccordionActions>}
+                    <AccordionDetails>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                        {tasks.map((task) => {
+                          return <TaskContainer task={task} handleDeleteTask={handleDeleteTask} handleUpdateTask={handleUpdateTask} categories={categories} handleUpdateCategory={handleUpdateCategory} />
+                        })}
+                      </div>
+                    </AccordionDetails>
+                  </Accordion>
+                })
+              }
+            </div>
           </div>
         </div>
-        <MagicBtn />
+        <MagicBtn onClick={handleSmartReorganize} />
       </div>
       <AddCategoryDialog addCategoryDialogOpen={addCategoryDialogOpen} setAddCategoryDialogOpen={setAddCategoryDialogOpen} handleAddCategory={handleAddCategory} />
     </React.Fragment>
@@ -140,23 +157,23 @@ const TaskContainer = (props: { task: Task, handleDeleteTask: (id: string) => vo
 
 export default App;
 
-const MagicBtn = () => (
+const MagicBtn = ({onClick}: {onClick: ()=>void}) => (
   <div style={{ position: 'fixed', bottom: '20px', right: '20px' }}>
     <Tooltip title="Smart re-organize tasks">
-      <Fab color="primary" aria-label="Magic organize" variant="extended">
+      <Fab color="primary" aria-label="Magic organize" variant="extended" onClick={onClick}>
         <AutoFixHigh />
       </Fab>
     </Tooltip>
   </div>
 );
-function AddCategoryDialog({addCategoryDialogOpen, setAddCategoryDialogOpen, handleAddCategory}:{addCategoryDialogOpen: boolean, setAddCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>, handleAddCategory: (category: string) => void}) {
+function AddCategoryDialog({ addCategoryDialogOpen, setAddCategoryDialogOpen, handleAddCategory }: { addCategoryDialogOpen: boolean, setAddCategoryDialogOpen: React.Dispatch<React.SetStateAction<boolean>>, handleAddCategory: (category: string) => void }) {
   const [category, setCategory] = React.useState('');
   return <Dialog open={addCategoryDialogOpen} onClose={() => setAddCategoryDialogOpen(false)}>
     <Paper style={{ minWidth: 300, paddingInline: 16, paddingBottom: 16 }}>
       <h3>Add a new category</h3>
       <div style={{ display: 'flex', gap: 8 }}>
-        <Input placeholder="Type a category name" fullWidth onChange={(event) => { setCategory(event.target.value); } } value={category} />
-        <Button variant="contained" onClick={() => { handleAddCategory(category); setAddCategoryDialogOpen(false); }} startIcon={<Check/>}>Done</Button>
+        <Input placeholder="Type a category name" fullWidth onChange={(event) => { setCategory(event.target.value); }} value={category} />
+        <Button variant="contained" onClick={() => { handleAddCategory(category); setAddCategoryDialogOpen(false); }} startIcon={<Check />}>Done</Button>
       </div>
     </Paper>
   </Dialog>;
