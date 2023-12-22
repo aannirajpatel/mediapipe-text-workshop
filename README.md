@@ -1,70 +1,30 @@
-# Getting Started with Create React App
+# MediaPipe Text Workshop
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project demonstrates the use of Google's MediaPipe Solutions for generating Text Embeddings to categorize tasks in a smart todo list app.
 
-## Available Scripts
+We will create an app that allows users to create tasks and automatically categorizes them into matching categories using the MediaPipe framework. The universal sentence encoder model is used to generate text embeddings for the tasks, which are then compared using cosine similarity to determine the most relevant category.
 
-In the project directory, you can run:
+## Dependencies:
+- ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white): A JavaScript library for building user interfaces.
+- ![Material UI](https://img.shields.io/badge/-Material%20UI-0081CB?logo=material-ui&logoColor=white): A popular React UI framework for creating modern and responsive user interfaces.
+- ![MediaPipe](https://img.shields.io/badge/-MediaPipe-00A1D6?logo=google&logoColor=white): A framework developed by Google for building multimodal machine learning pipelines. This app utilizes the universal sentence encoder model provided out-of-the-box by Google with [`MediaPipe Solution for Text Embedding`](https://developers.google.com/mediapipe/solutions/text/text_embedder) for task categorization based on cosine similarity.
 
-### `npm start`
+## Features
+- Task creation: Users can create new tasks with a title and description.
+- Automatic categorization: The app uses the MediaPipe framework's universal sentence encoder model to categorize tasks based on their text embeddings.
+- Cosine similarity: The app calculates the cosine similarity between task embeddings to determine the most relevant category.
+- User interface: The frontend is built using React with Material UI components for a modern and intuitive user interface.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Usage
+1. Clone the repository.
+2. Install the required dependencies by doing `npm install`.
+3. Start the development server using `npm run start`, the browser should automatically open the app at `http://localhost:3000`.
+4. Start creating tasks and categories. Then click on the magic floating action button to automatically categorize the tasks.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Demo
 
-### `npm test`
+### Before:
+![Image](./docs/eg1.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### After clicking "Smart re-organize tasks":
+![Image](./docs/eg2.png)
