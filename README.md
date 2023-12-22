@@ -1,5 +1,7 @@
 # MediaPipe Text Workshop
 
+Try it out! https://aannirajpatel.github.io/mediapipe-text-workshop/
+
 This project demonstrates the use of Google's MediaPipe Solutions for generating Text Embeddings to categorize tasks in a smart todo list app.
 
 We will create an app that allows users to create tasks and automatically categorizes them into matching categories using the MediaPipe framework. The universal sentence encoder model is used to generate text embeddings for the tasks, which are then compared using cosine similarity to determine the most relevant category.
