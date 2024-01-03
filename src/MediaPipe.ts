@@ -3,7 +3,7 @@ import { FilesetResolver, TextEmbedder } from '@mediapipe/tasks-text';
 let textEmbedder: TextEmbedder;
 
 export async function createEmbedder() {
-    const textFiles = await FilesetResolver.forTextTasks(process.env.NODE_ENV === 'production' ? 'https://aannirajpatel.github.io/mediapipe-text-workshop/wasm/' : process.env.PUBLIC_URL + "/wasm/");
+    const textFiles = await FilesetResolver.forTextTasks(process.env.NODE_ENV === 'production' ? 'https://www.aanpatel.tech/mediapipe-text-workshop' : process.env.PUBLIC_URL);
     textEmbedder = await TextEmbedder.createFromOptions(
         textFiles,
         {

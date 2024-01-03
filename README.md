@@ -1,6 +1,6 @@
 # MediaPipe Text Workshop
 
-Try it out! https://aannirajpatel.github.io/mediapipe-text-workshop/
+Try it out! https://aanpatel.tech/mediapipe-text-workshop/
 
 This project demonstrates the use of Google's MediaPipe Solutions for generating Text Embeddings to categorize tasks in a smart todo list app.
 
